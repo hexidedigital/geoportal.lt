@@ -1,13 +1,8 @@
 import { FormatterInterface, RouteBuilderInterface } from './interfaces';
-import {
-    FormatterOptions, GeoFeature,
-    OriginalRouteObject,
-    Route,
-    RouteBuilderOptions,
-} from './types';
+import { FormatterOptions, GeoFeature, OriginalRouteObject, Route, RouteBuilderOptions } from './types';
 import { merge } from 'lodash';
 import Formatter from './formatter';
-import { GeoJSON } from "leaflet";
+import { GeoJSON } from 'leaflet';
 
 export default class Builder implements RouteBuilderInterface {
     formatter: FormatterInterface;
@@ -28,7 +23,6 @@ export default class Builder implements RouteBuilderInterface {
         source.routes.features.forEach((feature, index) => {
             const geometryType = this.parseGeometryType(source.routes.geometryType);
             const totalSteps = source.directions[index].features.length;
-            console.log('feature', feature)
 
             const route = {
                 name: feature.attributes.Name,
@@ -109,7 +103,7 @@ export default class Builder implements RouteBuilderInterface {
         };
     }
 
-    convertEsriToGeo(json: any): GeoJSON.FeatureCollection{
+    convertEsriToGeo(json: any): GeoJSON.FeatureCollection {
         let feature;
         let features;
         let type;

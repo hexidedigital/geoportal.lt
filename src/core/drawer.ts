@@ -21,7 +21,6 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     addPoint(point: MapPoint): this {
-
         const p = clone(point);
 
         // @ts-ignore

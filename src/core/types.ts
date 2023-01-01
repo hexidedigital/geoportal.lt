@@ -197,7 +197,7 @@ export type RouteDirection = {
 export type GeoFeature = {
     attributes: any;
     geometry: any;
-}
+};
 
 export type Route = {
     name: string;

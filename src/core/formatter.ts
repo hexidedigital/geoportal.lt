@@ -1,6 +1,7 @@
 import { merge } from 'lodash';
 import { DirectionStep, FormatterOptions } from './types';
 import { FormatterInterface } from './interfaces';
+import { localization } from "../localization";
 
 export default class Formatter implements FormatterInterface {
     options: FormatterOptions = {
@@ -20,7 +21,17 @@ export default class Formatter implements FormatterInterface {
     };
 
     constructor(options: FormatterOptions) {
-        this.options = merge({}, this.options, options);
+
+        let localeOptions = {};
+
+        if (localization[options.language]) {
+            localeOptions = localization[options.language]
+        }
+
+        this.options = merge({}, this.options, options, localeOptions);
+        console.log('localization[options.language]', localization[options.language])
+        console.log('localeOptions', localeOptions)
+        console.log('this.options', this.options)
     }
 
     /**

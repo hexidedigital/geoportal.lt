@@ -1,3 +1,4 @@
+import { localization } from "./localization";
 export { default as Search } from './core/search';
 export { default as Formatter } from './core/formatter';
 export { default as Solver } from './core/solver';
