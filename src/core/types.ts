@@ -46,6 +46,13 @@ export type RouterOptions = {
 export type RouteDrawerOptions = {
     markerIcon?: Icon | DivIcon;
     pointZoom?: number;
+    directionMarkerStyle?: {
+        radius?: number,
+        color?: string,
+        fillColor?: string,
+        opacity?: number,
+        fillOpacity?: number
+    },
 };
 
 export type EsriJson = {

@@ -1,5 +1,5 @@
 import { RouteDrawerInterface } from './interfaces';
-import { MapPoint, RouteDrawerOptions } from './types';
+import { MapPoint, Point, RouteDrawerOptions } from './types';
 import { clone, find, merge, remove } from 'lodash';
 // Bug: duplicate Leaflet object. https://github.com/Leaflet/Leaflet/issues/7382
 // import * as L from 'leaflet';
@@ -10,11 +10,19 @@ export default class Drawer implements RouteDrawerInterface {
     options: RouteDrawerOptions = {
         markerIcon: null,
         pointZoom: 16,
+        directionMarkerStyle: {
+            radius: 5,
+            color: '#ea4106',
+            fillColor: 'white',
+            opacity: 1,
+            fillOpacity: 0.7
+        },
     };
     paths: GeoJSON.GeoJsonObject[] = [];
     points: MapPoint[] = [];
     pointersLayer: LayerGroup;
     pathLayer: LayerGroup;
+    directionMarkersLayer: LayerGroup;
 
     constructor(options: RouteDrawerOptions) {
         this.options = merge({}, this.options, options);
@@ -31,6 +39,27 @@ export default class Drawer implements RouteDrawerInterface {
 
         this.points.push(p);
 
+        return this;
+    }
+
+    panTo(location: MapPoint, zoom: number | null = null): this {
+        if (zoom) {
+            this.map.setView(location, zoom)
+        } else {
+            this.map.panTo(location)
+        }
+        return this;
+    }
+
+    showDirectionMarker(location: Point): this {
+        const p = clone(location);
+
+        // @ts-ignore
+        L.circleMarker(location, this.options.directionMarkerStyle).addTo(this.directionMarkersLayer);
+        return this;
+    }
+    hideDirectionMarker(location: Point): this {
+        this.directionMarkersLayer.clearLayers();
         return this;
     }
 
@@ -79,6 +108,10 @@ export default class Drawer implements RouteDrawerInterface {
         this.pointersLayer = L.layerGroup().addTo(map);
         // @ts-ignore
         this.pathLayer = L.layerGroup().addTo(map);
+
+        // @ts-ignore
+        this.directionMarkersLayer = L.layerGroup().addTo(map);
+
         return this;
     }
 

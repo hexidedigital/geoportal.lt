@@ -90,6 +90,10 @@ export interface RouterInterface {
 
     addTo(map: Map): this;
 
+    panTo(location: Point, zoom: number | null): this;
+    showDirectionMarker(location: Point): this;
+    hideDirectionMarker(location: Point): this;
+
     getRoutes(): Route[];
     getOriginalRoute(): OriginalRouteObject;
 
@@ -116,11 +120,16 @@ export interface RouteDrawerInterface {
     points: MapPoint[];
     pointersLayer: LayerGroup;
     pathLayer: LayerGroup;
+    directionMarkersLayer: LayerGroup;
     paths: GeoJSON.GeoJsonObject[];
 
     setMap(map: Map): this;
 
     onMap(map: Map): this;
+
+    panTo(location: Point, zoom: number | null): this;
+    showDirectionMarker(location: Point): this;
+    hideDirectionMarker(location: Point): this;
 
     addPoint(point: Point): this;
 

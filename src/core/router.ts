@@ -93,6 +93,14 @@ export default class Router implements RouterInterface {
         this.drawer.setMap(map);
         return this;
     }
+    showDirectionMarker(location: Point): this {
+        this.drawer.showDirectionMarker(location);
+        return this;
+    }
+    hideDirectionMarker(location: Point): this {
+        this.drawer.hideDirectionMarker(location);
+        return this;
+    }
 
     async build(): Promise<this> {
         if (this.points.length < 2) {
@@ -125,6 +133,12 @@ export default class Router implements RouterInterface {
             this.drawer.addPoints(Router.preparePointsFromStops(route.stops)).draw(route.path);
         });
 
+        return this;
+    }
+
+    panTo(location: Point, zoom: number | null = null): this {
+
+        this.drawer.panTo(location, zoom)
         return this;
     }
 
