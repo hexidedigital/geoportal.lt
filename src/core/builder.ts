@@ -45,7 +45,7 @@ export default class Builder implements RouteBuilderInterface {
 
             source.directions[index].features.forEach((step, i) => {
                 route.directions.push({
-                    icon: this.formatter.getIconName(step, i, totalSteps),
+                    icon: this.formatter.getIconName(step, i, totalSteps - 1),
                     text: this.formatter.formatStep(step),
                     length: this.formatter.formatDistance(step.attributes.length * 1000),
                     time: this.formatter.formatTime(step.attributes.time * 60),

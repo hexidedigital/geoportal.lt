@@ -29,9 +29,6 @@ export default class Formatter implements FormatterInterface {
         }
 
         this.options = merge({}, this.options, options, localeOptions);
-        console.log('localization[options.language]', localization[options.language])
-        console.log('localeOptions', localeOptions)
-        console.log('this.options', this.options)
     }
 
     /**
