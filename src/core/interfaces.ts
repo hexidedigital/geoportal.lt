@@ -24,7 +24,7 @@ export interface SearchInterface {
 
     search(query: string): Promise<ElasticSearchObject[]>;
 
-    payload(query: string): string;
+    payload(query: string): string | object;
 
     filter(list: ElasticSearchObject[], types: string[]): ElasticSearchObject[];
 

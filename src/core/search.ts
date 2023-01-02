@@ -26,7 +26,17 @@ export default class Search implements SearchInterface {
 
         this.latestQuery = query;
 
-        const response = await axios.post(this.url, this.payload(query));
+        const payload = this.payload(query);
+
+        const response = await axios.post(
+            this.url,
+            payload,
+            {
+                headers: {
+                    "content-type": "text/plain",
+                }
+            }
+        );
 
         if (response.data && response.data.hits) {
             const items = this.filter(response.data.hits.hits);
@@ -39,9 +49,113 @@ export default class Search implements SearchInterface {
         return this.items;
     }
 
-    payload(query: string): string {
-        // TODO - you are free to refactor this piece of code =)
-        return (
+    payload(query: string): string | object {
+
+        return {
+            "query": {
+                "function_score": {
+                    "query": {
+                        "multi_match": {
+                            "query": query,
+                            "type": "phrase",
+                            "fields": [
+                                "VARDAS^5",
+                                "VARDAS.folded^5",
+                                "FULL_ADDR",
+                                "FULL_ADDR.folded"
+                            ],
+                            "slop": 5
+                        }
+                    },
+                    "functions": [
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "apskritis"
+                                }
+                            },
+                            "weight": 1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "savivaldybė"
+                                }
+                            },
+                            "weight": 1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "gyvenvietė"
+                                }
+                            },
+                            "weight": 1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "miesto dalis"
+                                }
+                            },
+                            "weight": 1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "gatvė"
+                                }
+                            },
+                            "weight": 1.2
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "adresas"
+                                }
+                            },
+                            "weight": 0.1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "ežeras"
+                                }
+                            },
+                            "weight": 1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "tvenkinys"
+                                }
+                            },
+                            "weight": 1
+                        },
+                        {
+                            "filter": {
+                                "term": {
+                                    "TYPE": "upė"
+                                }
+                            },
+                            "weight": 1
+                        }
+                    ]
+                }
+            },
+            "sort": [
+                "_score",
+                {
+                    "GYVSK": "desc"
+                },
+                "VARDAS"
+            ],
+            "from": this.start,
+            "size": this.options.perPage
+        };
+
+
+        return JSON.parse(
             '{"query":{"function_score":{"query":{"multi_match":{"query":"' +
             query +
             '","type":"most_fields","fields":["VARDAS^5","VARDAS.folded^5","VARDAS.shingle^5","VARDAS.trigram^3","VARDAS.edge^5","FULL_ADDR","FULL_ADDR.folded","FULL_ADDR.shingle","FULL_ADDR.trigram","FULL_ADDR.edge"],"slop":5}},"functions":[{"filter":{"term":{"TYPE":"apskritis"}},"weight":1},{"filter":{"term":{"TYPE":"savivaldybė"}},"weight":1},{"filter":{"term":{"TYPE":"gyvenvietė"}},"weight":1},{"filter":{"term":{"TYPE":"miesto dalis"}},"weight":1},{"filter":{"term":{"TYPE":"gatvė"}},"weight":1.2},{"filter":{"term":{"TYPE":"adresas"}},"weight":0.1},{"filter":{"term":{"TYPE":"ežeras"}},"weight":1},{"filter":{"term":{"TYPE":"tvenkinys"}},"weight":1},{"filter":{"term":{"TYPE":"upė"}},"weight":1}]}},"sort":["_score",{"GYVSK":"desc"},"VARDAS"],"from":' +
