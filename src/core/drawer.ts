@@ -29,6 +29,11 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     addPoint(point: MapPoint): this {
+
+        if (!this.map) {
+            throw new Error('Map Object not found. Add map to drawer first.')
+        }
+
         const p = clone(point);
 
         // @ts-ignore
@@ -43,6 +48,11 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     panTo(location: MapPoint, zoom: number | null = null): this {
+
+        if (!this.map) {
+            throw new Error('Map Object not found. Add map to drawer first.')
+        }
+
         if (zoom) {
             this.map.setView(location, zoom)
         } else {
@@ -52,13 +62,24 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     showDirectionMarker(location: Point): this {
+
+        if (!this.map) {
+            throw new Error('Map Object not found. Add map to drawer first.')
+        }
+
         const p = clone(location);
 
         // @ts-ignore
-        L.circleMarker(location, this.options.directionMarkerStyle).addTo(this.directionMarkersLayer);
+        L.circleMarker(p, this.options.directionMarkerStyle).addTo(this.directionMarkersLayer);
         return this;
     }
+
     hideDirectionMarker(location: Point): this {
+
+        if (!this.map) {
+            throw new Error('Map Object not found. Add map to drawer first.')
+        }
+
         this.directionMarkersLayer.clearLayers();
         return this;
     }
@@ -72,6 +93,11 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     removePoint(point: MapPoint): this {
+
+        if (!this.map) {
+            throw new Error('Map Object not found. Add map to drawer first.')
+        }
+
         const marker = find(this.points, (el) => {
             return el.lat === point.lat && el.lng === point.lng;
         });
@@ -87,8 +113,11 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     clear(): this {
-        this.pointersLayer.clearLayers();
-        this.pathLayer.clearLayers();
+        if (this.map) {
+            this.pointersLayer.clearLayers();
+            this.pathLayer.clearLayers();
+        }
+
         this.points = [];
         this.paths = [];
 
@@ -96,6 +125,12 @@ export default class Drawer implements RouteDrawerInterface {
     }
 
     draw(path: GeoJSON.GeoJsonObject): this {
+
+        if (!this.map) {
+            throw new Error('Map Object not found. Add map to drawer first.')
+        }
+
+
         this.paths.push(path);
         // @ts-ignore
         L.geoJSON(path).addTo(this.pathLayer);
