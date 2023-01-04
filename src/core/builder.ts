@@ -27,7 +27,7 @@ export default class Builder implements RouteBuilderInterface {
             const route = {
                 name: feature.attributes.Name,
                 summary: {
-                    length: this.formatter.formatDistance(feature.attributes.Total_Meters * 1000),
+                    length: this.formatter.formatDistance(feature.attributes.Total_Meters),
                     time: this.formatter.formatTime(feature.attributes.Total_Minutes * 60),
                 },
                 directions: Array(),
