@@ -35,6 +35,7 @@ export default class Router implements RouterInterface {
         url: 'https://www.geoportal.lt/map/proxy/routing/Route/solve',
         autoRoute: true,
     };
+    useDrawer: boolean = false;
 
     constructor(
         options: RouterOptions = {},
@@ -58,7 +59,9 @@ export default class Router implements RouterInterface {
         if (point.lat && point.lng) {
             this.points.push(point);
 
-            this.drawer.addPoint(point);
+            if (this.useDrawer) {
+                this.drawer.addPoint(point);
+            }
         }
 
         return this;
@@ -91,14 +94,25 @@ export default class Router implements RouterInterface {
 
     addTo(map: Map): this {
         this.drawer.setMap(map);
+        this.useDrawer = true;
         return this;
     }
     showDirectionMarker(location: Point): this {
+        if (!this.useDrawer) {
+            throw new Error('Drawer cannot be used. Init Drawer with map first.')
+        }
+
         this.drawer.showDirectionMarker(location);
+
         return this;
     }
     hideDirectionMarker(location: Point): this {
+        if (!this.useDrawer) {
+            throw new Error('Drawer cannot be used. Init Drawer with map first.')
+        }
+
         this.drawer.hideDirectionMarker(location);
+
         return this;
     }
 
@@ -114,19 +128,22 @@ export default class Router implements RouterInterface {
         return this;
     }
 
-    buildDirections(): this {
-        // TODO
-        return this;
-    }
-
     clear(): this {
         this.points = [];
         this.routes = null;
-        this.drawer.clear();
+
+        if (this.useDrawer) {
+            this.drawer.clear();
+        }
+
         return this;
     }
 
     draw(): this {
+        if (!this.useDrawer) {
+            throw new Error('Drawer cannot be used. Init Drawer with map first.')
+        }
+
         this.drawer.clear();
 
         this.routes.forEach((route) => {
@@ -137,6 +154,10 @@ export default class Router implements RouterInterface {
     }
 
     panTo(location: Point, zoom: number | null = null): this {
+
+        if (!this.useDrawer) {
+            throw new Error('Drawer cannot be used. Init Drawer with map first.')
+        }
 
         this.drawer.panTo(location, zoom)
         return this;
@@ -149,6 +170,7 @@ export default class Router implements RouterInterface {
 
     setDrawer(drawer: RouteDrawerInterface): this {
         this.drawer = drawer;
+        this.useDrawer = true;
         return this;
     }
 

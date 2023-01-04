@@ -110,8 +110,6 @@ export interface RouterInterface {
     build(): Promise<this>;
 
     draw(): this;
-
-    buildDirections(): this;
 }
 
 export interface RouteDrawerInterface {
