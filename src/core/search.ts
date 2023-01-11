@@ -196,7 +196,7 @@ export default class Search implements SearchInterface {
 		return list.map((item) => {
 			return {
 				label: item._source.VARDAS,
-				city: this.capitalize(item._source.CITY),
+				city: item._source.CITY ? this.capitalize(item._source.CITY): '',
 				full_address: item._source.FULL_ADDR,
 				description: item._source.DESCRIPTIO,
 				type: item._source.TYPE,
