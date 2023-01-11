@@ -26,9 +26,9 @@ export default class Search implements SearchInterface {
 
 		this.latestQuery = query;
 
-		const payload = this.payload(query);
+		let payload = this.payload(query);
 
-		const response = await axios.post(
+		let response = await axios.post(
 			this.url,
 			payload,
 			{
@@ -38,7 +38,23 @@ export default class Search implements SearchInterface {
 			}
 		);
 
+		if (response.data && response.data.hits && response.data.hits.total === 0) {
+			// full search
+			payload = this.payload(query, true);
+
+			response = await axios.post(
+				this.url,
+				payload,
+				{
+					headers: {
+						"content-type": "text/plain",
+					}
+				}
+			);
+		}
+
 		if (response.data && response.data.hits) {
+
 			const items = this.filter(response.data.hits.hits);
 
 			this.items = this.format(items);
@@ -49,7 +65,12 @@ export default class Search implements SearchInterface {
 		return this.items;
 	}
 
-	payload(query: string): string | object {
+	payload(query: string, fullSearch: boolean = false): string | object {
+
+		const fields = fullSearch ?
+			["VARDAS^5", "VARDAS.folded^5", "VARDAS.shingle^5", "VARDAS.trigram^3", "VARDAS.edge^5", "FULL_ADDR", "FULL_ADDR.folded", "FULL_ADDR.shingle", "FULL_ADDR.trigram", "FULL_ADDR.edge"] :
+			["VARDAS^5", "VARDAS.folded^5","FULL_ADDR","FULL_ADDR.folded"];
+
 
 		return {
 			"query": {
@@ -58,18 +79,7 @@ export default class Search implements SearchInterface {
 						"multi_match": {
 							"query": query,
 							"type": "phrase",
-							"fields": [
-								"VARDAS^5",
-								"VARDAS.folded^5",
-								"VARDAS.shingle^5",
-								"VARDAS.trigram^3",
-								"VARDAS.edge^5",
-								"FULL_ADDR",
-								"FULL_ADDR.folded",
-								"FULL_ADDR.shingle",
-								"FULL_ADDR.trigram",
-								"FULL_ADDR.edge"
-							],
+							"fields": fields,
 							"slop": 5
 						}
 					},
