@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ElasticSearchObject, Point, SearchOptions } from './types';
+import { ElasticSearchObject, GeoSearchPoint, Point, SearchOptions } from './types';
 import { SearchInterface } from './interfaces';
 
 export default class Search implements SearchInterface {
@@ -176,10 +176,14 @@ export default class Search implements SearchInterface {
         });
     }
 
-    format(list: ElasticSearchObject[]): Point[] {
+    format(list: ElasticSearchObject[]): GeoSearchPoint[] {
         return list.map((item) => {
             return {
-                label: item._source.VARDAS + (item._source.CITY && item._source.VARDAS.indexOf(item._source.CITY) < 0 ? ', ' + this.capitalize(item._source.CITY) : ''),
+                label: item._source.VARDAS,
+                city: this.capitalize(item._source.CITY),
+                full_address: item._source.FULL_ADDR,
+                description: item._source.DESCRIPTIO,
+                type: item._source.TYPE,
                 lat: item._source.LOCATIONY,
                 lng: item._source.LOCATIONX,
             };

@@ -149,6 +149,16 @@ export type Point = {
     lng: number;
 };
 
+export type GeoSearchPoint = {
+    label: string;
+    city: string;
+    full_address: string;
+    description: string;
+    type: string;
+    lat: number;
+    lng: number;
+};
+
 export type MapPoint = {
     label: string;
     lat: number;
