@@ -179,7 +179,7 @@ export default class Search implements SearchInterface {
     format(list: ElasticSearchObject[]): Point[] {
         return list.map((item) => {
             return {
-                label: item._source.FULL_ADDR,
+                label: item._source.VARDAS + (item._source.CITY ? ', ' + item._source.CITY : ''),
                 lat: item._source.LOCATIONY,
                 lng: item._source.LOCATIONX,
             };
