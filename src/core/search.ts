@@ -179,10 +179,14 @@ export default class Search implements SearchInterface {
     format(list: ElasticSearchObject[]): Point[] {
         return list.map((item) => {
             return {
-                label: item._source.VARDAS + (item._source.CITY ? ', ' + item._source.CITY : ''),
+                label: item._source.VARDAS + (item._source.CITY ? ', ' + this.capitalize(item._source.CITY) : ''),
                 lat: item._source.LOCATIONY,
                 lng: item._source.LOCATIONX,
             };
         });
+    }
+
+    capitalize(label: string): string {
+        return label.length > 0 ? label.charAt(0).toUpperCase() + label.slice(1) : label;
     }
 }
