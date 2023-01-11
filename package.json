@@ -1,6 +1,6 @@
 {
   "name": "@hexide-digital/geoportal.lt",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Set of libs for geoportal.lt",
   "main": "lib/index.js",
   "files": [
